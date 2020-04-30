@@ -8,11 +8,18 @@ import models._
 import models.database.Database
 
 
-class FreelanceandoServlet(db : Database) extends ScalatraServlet {
+class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJsonSupport {
 
+  // Before every action runs, set the content type to be in JSON format.
+  protected implicit val jsonFormats: Formats = DefaultFormats
+  before() {
+    contentType = formats("json")
+  }
+  
   // Here you have to complete all the API endopoints.
-
-  get("/api/categories") { db.categories.all }
+  get("/api/categories") { Ok(db.categories.all.map((x: Category) => x.toMap)) }
+  
+  get("/api/freelancers") { Ok(db.freelancers.all.map((x: Freelancer) => x.toMap)) }
 
 }
 
