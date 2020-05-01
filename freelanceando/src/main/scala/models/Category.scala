@@ -20,7 +20,7 @@ object Category extends ModelCompanion[Category] {
   def apply: Category = new Category
 }
 
-class Category extends Model[Category] with User {
+class Category extends Model[Category] {
   
   // TODO complete here with the methods for your model
   protected[models] var name: String = "DefaultName"
