@@ -33,17 +33,19 @@ class DatabaseTable[M <: Model[M]](val filename: String) {
     if (_instances.isEmpty) 1 else _instances.keys.max + 1
 
   /* Return an immutable copy of the list of instances. */
+  /* Return an immutable copy of the list of instances. */
   def all: List[M] = {
     // TODO implement this function taking advatage of functional programming!
-    List()
+    _instances.values.toList
   }
+
 
   /* Return Some(instance) if there is an instance in _instances with @id.
    * Return None otherwise.
    */
   def get(id: Int): Option[M] = {
     // TODO implement this function taking advatage of functional programming!
-    None
+    _instances.get(id)
   }
 
   /* Return a list of instances that matches the pairs
