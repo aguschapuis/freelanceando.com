@@ -21,5 +21,20 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
   
   get("/api/freelancers") { Ok(db.freelancers.all.map((x: Freelancer) => x.toMap)) }
 
+  get("/api/freelancers/:id") {
+    val id0: String = params("id")
+    try { 
+      val id: Int = id0.toInt
+      db.freelancers.get(id) match {
+        case Some(freelancer) => Ok(freelancer.toMap)
+        case None => BadRequest(s"No such category with the id:${id}\n")
+      }
+    }
+    catch {
+      case err: java.lang.NumberFormatException =>
+        BadRequest(s"The id:${id0} is not an Integer\n")
+    }
+  }
+
 }
 
