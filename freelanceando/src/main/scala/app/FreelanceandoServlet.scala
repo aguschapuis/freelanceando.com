@@ -35,6 +35,18 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
         BadRequest(s"The id:${id0} is not an Integer\n")
     }
   }
+  post("/api/freelancers") {
+   parsedBody match {
+     case JNothing => BadRequest("Bad Json\n")
+     case parsedResponse => {
+       val freelancer = new Freelancer("Juan", "Argetina", List(1,3), "Junior", 20)
+       // Do things to create client here
+       Ok(freelancer.getId)
+     }
+   }
+ }
+
+ get("/api/jobs") { Ok(db.jobs.all.map((x: Job) => x.toMap)) }
 
 }
 
