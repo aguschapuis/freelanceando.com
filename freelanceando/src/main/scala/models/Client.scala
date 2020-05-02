@@ -31,11 +31,11 @@ class Client extends Model[Client] {
     // the instance attributes.
     super.fromJson(jsonValue)
     (jsonValue \ "username") match {
-      case JString(value) => name = value.toString
+      case JString(value) => username = value.toString
       case _ =>  // Do nothing, things may not have an id
     }
     (jsonValue \ "country_code") match {
-      case JString(value) => name = value.toString
+      case JString(value) => country_code = value.toString
       case _ =>  // Do nothing, things may not have an id
     }
     this  // Return a reference to this object.
