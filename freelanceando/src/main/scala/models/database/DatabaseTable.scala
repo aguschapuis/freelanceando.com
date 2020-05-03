@@ -10,7 +10,7 @@ import org.json4s.jackson.Serialization
 import scala.collection.mutable.{Map => Dict}
 import scala.io.Source
 import scala.util.{Success, Try, Failure}
-
+import java.util.{Collections, Set}
 import models._
 
 case class ModelWithoutId(message: String) extends Exception(message)
@@ -56,7 +56,12 @@ class DatabaseTable[M <: Model[M]](val filename: String) {
    */
   def filter(attributes: Map[String, Any]): List[M] = {
     // TODO implement this function taking advatage of OOP!
-    List()
+
+    //_instances.values.filter((attributes.toSet.subsetOf( _.toMap.toSet)))
+    _instances.values.filter((a : M) =>
+                                     (attributes.toSet.subsetOf(a.toMap.toSet)))
+
+
   }
 
   /* ** YOU DON'T NEED TO TOUCH ANYTHING BELOW THIS LINE **
