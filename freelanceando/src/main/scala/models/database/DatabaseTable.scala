@@ -57,11 +57,10 @@ class DatabaseTable[M <: Model[M]](val filename: String) {
   def filter(attributes: Map[String, Any]): List[M] = {
     // TODO implement this function taking advatage of OOP!
 
-    //_instances.values.filter((attributes.toSet.subsetOf( _.toMap.toSet)))
-    _instances.values.filter((a : M) =>
-                                     (attributes.toSet.subsetOf(a.toMap.toSet)))
+    //_instances.values.filter((a : M) =>
+    //                                 (attributes.toSet.subsetOf(a.toMap.toSet)))
 
-
+    List()
   }
 
   /* ** YOU DON'T NEED TO TOUCH ANYTHING BELOW THIS LINE **
