@@ -23,7 +23,7 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
 
   get("/api/freelancers/:id") {
     val id0: String = params("id")
-    try { 
+    try {
       val id: Int = id0.toInt
       db.freelancers.get(id) match {
         case Some(freelancer) => Ok(freelancer.toMap)
@@ -35,6 +35,8 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
         BadRequest(s"The id:${id0} is not an Integer\n")
     }
   }
+
+/*
   post("/api/freelancers") {
    parsedBody match {
      case JNothing => BadRequest("Bad Json\n")
@@ -44,7 +46,37 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
        Ok(freelancer.getId)
      }
    }
- }
+  }
+
+*/
+
+  get("/api/clients") { Ok(db.clients.all.map((x: Client) => x.toMap)) }
+  
+  post("/api/clients") {
+   parsedBody match {
+     case JNothing => BadRequest("Bad Json\n")
+     case parsedResponse => {
+       // Do things to create client here
+       val client = new Client(params("username"), params("country_code"))
+       db.clients.save(client)
+       Ok(client.getId)
+     }
+   }
+  }
+  get("/api/clients/:id") {
+    val id0: String = params("id")
+    try {
+      val id: Int = id0.toInt
+      db.clients.get(id) match {
+        case Some(client) => Ok(client.toMap)
+        case None => BadRequest(s"No such client with the id:${id}\n")
+      }
+    }
+    catch {
+      case err: java.lang.NumberFormatException =>
+        BadRequest(s"The id:${id0} is not an Integer\n")
+    }
+  }
 
  get("/api/jobs") { Ok(db.jobs.all.map((x: Job) => x.toMap)) }
 
