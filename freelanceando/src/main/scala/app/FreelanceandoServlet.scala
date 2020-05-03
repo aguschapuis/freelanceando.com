@@ -36,7 +36,7 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
     }
   }
 
-/*
+
   post("/api/freelancers") {
    parsedBody match {
      case JNothing => BadRequest("Bad Json\n")
@@ -48,7 +48,7 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
    }
   }
 
-*/
+
 
   get("/api/clients") { Ok(db.clients.all.map((x: Client) => x.toMap)) }
   
