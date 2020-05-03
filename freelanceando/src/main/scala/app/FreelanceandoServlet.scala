@@ -27,7 +27,7 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
       val id: Int = id0.toInt
       db.freelancers.get(id) match {
         case Some(freelancer) => Ok(freelancer.toMap)
-        case None => BadRequest(s"No such category with the id:${id}\n")
+        case None => BadRequest(s"No such freelancer with the id:${id}\n")
       }
     }
     catch {
@@ -36,19 +36,17 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
     }
   }
 
-
   post("/api/freelancers") {
    parsedBody match {
-     case JNothing => BadRequest("Bad Json\n")
-     case parsedResponse => {
-       val freelancer = new Freelancer("Juan", "Argetina", List(1,3), "Junior", 20)
-       // Do things to create client here
-       Ok(freelancer.getId)
-     }
-   }
+      case JNothing => BadRequest("Bad Json\n")
+      case parsedResponse => {
+        val newFreelancer = new Freelancer()
+        newFreelancer.fromJson(parsedResponse)
+        db.freelancers.save(newFreelancer)
+        Ok(newFreelancer.getId)
+      }
+    }
   }
-
-
 
   get("/api/clients") { Ok(db.clients.all.map((x: Client) => x.toMap)) }
   
@@ -63,6 +61,7 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
      }
    }
   }
+
   get("/api/clients/:id") {
     val id0: String = params("id")
     try {
@@ -78,7 +77,7 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
     }
   }
 
- get("/api/jobs") { Ok(db.jobs.all.map((x: Job) => x.toMap)) }
+  get("/api/jobs") { Ok(db.jobs.all.map((x: Job) => x.toMap)) }
 
 }
 

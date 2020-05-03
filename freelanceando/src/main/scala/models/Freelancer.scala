@@ -64,7 +64,7 @@ class Freelancer extends Model[Freelancer] {
     }
     (jsonValue \ "reputation") match {
       case JString(value) => reputation = value.toString
-      case _ =>
+      case _ => reputation = "Junior"
     }
     (jsonValue \ "hourly_price") match {
       case JInt(value) => hourly_price = value.toInt
