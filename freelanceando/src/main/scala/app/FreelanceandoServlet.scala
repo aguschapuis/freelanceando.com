@@ -90,6 +90,7 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
 
   get("/api/jobs") { Ok(db.jobs.all.map((x: Job) => x.toMap)) }
 
+/*
   post("api/posts/pay"){
     val id: Int
     val amount : Int
@@ -136,8 +137,7 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
     clientPay.IncrementTotal_spend(amount)
     freelancerPay.IncrementHourly_price(amount)
     
-    
-
   }
+  */
 }
 
