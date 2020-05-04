@@ -61,16 +61,6 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
   get("/api/clients") { Ok(db.clients.all.map((x: Client) => x.toMap)) }
   
   post("/api/clients") {
-<<<<<<< HEAD
-    parsedBody match {
-      case JNothing => BadRequest("Bad Json\n")
-      case parsedResponse => {
-         // Do things to create client here
-         val newClients = new Client()
-         newClients.fromJson(parsedResponse)
-         db.clients.save(newClients)
-         Ok(newClients.getId)
-=======
    parsedBody match {
       case JNothing => BadRequest("Bad Json\n")
       case parsedResponse => {
@@ -153,6 +143,7 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
 
     clientPay.IncrementTotal_spend(amount)
     freelancerPay.IncrementHourly_price(amount)
+    
     
   }
   */
