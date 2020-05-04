@@ -79,14 +79,4 @@ class Freelancer extends Model[Freelancer] {
     this // Return a reference to this object.
   }
 
-  def validate_names(names: Set[String]): Unit = {
-    val validNames: Set[String] = Set("username", "country_code",
-                                      "category_ids", "reputation",
-                                      "hourly_price")
-    names.subsetOf(validNames) match {
-      case false => throw new IllegalArgumentException
-      case _ =>
-    }
-  }
-
 }
