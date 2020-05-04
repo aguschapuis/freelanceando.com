@@ -1,6 +1,6 @@
 package models
 
-import org.json4s.{DefaultFormats, JValue, JInt, JString, JArray}
+import org.json4s.{DefaultFormats, JValue, JInt, JString, JArray, JNothing}
 import org.json4s.DefaultFormats
 
 
@@ -51,26 +51,42 @@ class Freelancer extends Model[Freelancer] {
     // the instance attributes.
     super.fromJson(jsonValue)
     (jsonValue \ "username") match {
+      case JNothing =>
       case JString(value) => username = value.toString
-      case _ =>
+      case _ => throw new IllegalArgumentException
     }
     (jsonValue \ "country_code") match {
+      case JNothing =>
       case JString(value) => country_code = value.toString
-      case _ =>
+      case _ => throw new IllegalArgumentException
     }
     (jsonValue \ "category_ids") match {
+      case JNothing =>
       case JArray(value) => category_ids = value.map { case JInt(x) => x.toInt } // hay que chequear Ids validos?
-      case _ =>
+      case _ => throw new IllegalArgumentException
     }
     (jsonValue \ "reputation") match {
+      case JNothing => reputation = "Junior"
       case JString(value) => reputation = value.toString
-      case _ => reputation = "Junior"
+      case _ => throw new IllegalArgumentException
     }
     (jsonValue \ "hourly_price") match {
+      case JNothing =>
       case JInt(value) => hourly_price = value.toInt
-      case _ =>
+      case _ => throw new IllegalArgumentException
     }
 
     this // Return a reference to this object.
   }
+
+  def validate_names(names: Set[String]): Unit = {
+    val validNames: Set[String] = Set("username", "country_code",
+                                      "category_ids", "reputation",
+                                      "hourly_price")
+    names.subsetOf(validNames) match {
+      case false => throw new IllegalArgumentException
+      case _ =>
+    }
+  }
+
 }

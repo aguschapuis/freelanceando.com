@@ -41,9 +41,17 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
       case JNothing => BadRequest("Bad Json\n")
       case parsedResponse => {
         val newFreelancer = new Freelancer()
-        newFreelancer.fromJson(parsedResponse)
-        db.freelancers.save(newFreelancer)
-        Ok(newFreelancer.getId)
+        try {
+          val keys = parsedBody.extract[Map[String, Any]].keys.toSet
+          newFreelancer.validate_names(keys)
+          newFreelancer.fromJson(parsedResponse)
+          db.freelancers.save(newFreelancer)
+          Ok(newFreelancer.getId)
+        }
+        catch {
+          case err: IllegalArgumentException =>
+            BadRequest("Invalid parameter\n")
+        }
       }
     }
   }
