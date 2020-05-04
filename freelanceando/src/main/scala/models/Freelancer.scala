@@ -100,5 +100,4 @@ class Freelancer extends Model[Freelancer] {
       case _ =>
     }
   }
-
 }

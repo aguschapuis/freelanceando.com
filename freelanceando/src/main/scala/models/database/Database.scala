@@ -28,12 +28,16 @@ class Database (val databaseDirname: String) {
   val freelancers = new DatabaseTable[Freelancer](
     s"${databaseDirname}/freelancers.json")
 
+  val clients = new DatabaseTable[Client](
+    s"${databaseDirname}/clients.json")
+
   val jobs = new DatabaseTable[Job](
     s"${databaseDirname}/jobs.json")
 
   def load: Unit = {
     categories.load(Category)
     freelancers.load(Freelancer)
+    clients.load(Client)
     jobs.load(Job)
   }
 }
