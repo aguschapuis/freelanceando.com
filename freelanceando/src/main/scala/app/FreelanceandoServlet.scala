@@ -51,15 +51,16 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
   get("/api/clients") { Ok(db.clients.all.map((x: Client) => x.toMap)) }
   
   post("/api/clients") {
-   parsedBody match {
-     case JNothing => BadRequest("Bad Json\n")
-     case parsedResponse => {
-       // Do things to create client here
-       val client = new Client(params("username"), params("country_code"))
-       db.clients.save(client)
-       Ok(client.getId)
-     }
-   }
+    parsedBody match {
+      case JNothing => BadRequest("Bad Json\n")
+      case parsedResponse => {
+         // Do things to create client here
+         val newClients = new Client()
+         newClients.fromJson(parsedResponse)
+         db.clients.save(newClients)
+         Ok(newClients.getId)
+      }
+    }
   }
 
   get("/api/clients/:id") {
@@ -79,5 +80,54 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
 
   get("/api/jobs") { Ok(db.jobs.all.map((x: Job) => x.toMap)) }
 
+  post("api/posts/pay"){
+    val id: Int
+    val amount : Int
+    val clientPay : Client
+    val freelancerPay : Frelancer
+    val jobPay : Job
+    
+    try {
+      id = params("freelancer_id").toInt
+      db.freelancers.get(id) match {
+        case Some(freelancer) => freelancerPay = freelancer
+        case None => BadRequest(s"No such freelancer with the id:${id}\n")
+      }
+    }
+    catch {
+      case err: java.lang.NumberFormatException =>
+        BadRequest(s"The id:${id0} is not an Integer\n")
+    }
+    
+    try {
+      id = params("job_id").toInt
+      db.jobs.get(id) match {
+        case Some(job) => jobPay = job
+        case None => BadRequest(s"No such job with the id:${id}\n")
+      }
+    }
+    catch {
+      case err: java.lang.NumberFormatException =>
+        BadRequest(s"The id:${id0} is not an Integer\n")
+    }
+    
+    try {
+      amount = params("amount").toInt
+      db.clients.get(jobPay._client_id) match {          // Deberia ir getClient
+        case Some(client) => clientPay = client
+        case None => BadRequest(s"No such client with the id:${id}\n")
+      }
+    }
+    catch {
+      case err: java.lang.NumberFormatException =>
+        BadRequest(s"The id:${id0} is not an Integer\n")
+    }
+
+    clientPay.IncrementTotal_spend(amount)
+    freelancerPay.IncrementHourly_price(amount)
+    
+    
+
+  }
 }
 

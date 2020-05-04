@@ -73,4 +73,7 @@ class Freelancer extends Model[Freelancer] {
 
     this // Return a reference to this object.
   }
+  
+  
+  
 }
