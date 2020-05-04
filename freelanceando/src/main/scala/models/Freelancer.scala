@@ -47,6 +47,13 @@ class Freelancer extends Model[Freelancer] {
                                             
   
   override def fromJson(jsonValue: JValue): Freelancer = {
+    def JInt2Int(x: JValue): Int = {
+      x match {
+        case JInt(x) => x.toInt
+        case _ => throw new IllegalArgumentException
+      }
+    }
+
     // TODO Parse jsonValue here and assign the values to
     // the instance attributes.
     super.fromJson(jsonValue)
@@ -62,7 +69,7 @@ class Freelancer extends Model[Freelancer] {
     }
     (jsonValue \ "category_ids") match {
       case JNothing =>
-      case JArray(value) => category_ids = value.map { case JInt(x) => x.toInt } // hay que chequear Ids validos?
+      case JArray(list) => category_ids = list.map(JInt2Int)
       case _ => throw new IllegalArgumentException
     }
     (jsonValue \ "reputation") match {
@@ -79,9 +86,16 @@ class Freelancer extends Model[Freelancer] {
     this // Return a reference to this object.
   }
 
-  override def validate_names(names: Set[String]): Unit = {
+  override def validateNames(names: Set[String]): Unit = {
     val validNames: Set[String] = this.toMap.keys.toSet - "id"
     names.subsetOf(validNames) match {
+      case false => throw new IllegalArgumentException
+      case _ =>
+    }
+  }
+
+  def validateCategoryIds(validIds: List[Int]): Unit = {
+    this.category_ids.toSet.subsetOf(validIds.toSet) match {
       case false => throw new IllegalArgumentException
       case _ =>
     }
