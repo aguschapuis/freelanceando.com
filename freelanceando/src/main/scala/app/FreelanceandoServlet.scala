@@ -61,6 +61,7 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
   get("/api/clients") { Ok(db.clients.all.map((x: Client) => x.toMap)) }
   
   post("/api/clients") {
+<<<<<<< HEAD
     parsedBody match {
       case JNothing => BadRequest("Bad Json\n")
       case parsedResponse => {
@@ -69,6 +70,22 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
          newClients.fromJson(parsedResponse)
          db.clients.save(newClients)
          Ok(newClients.getId)
+=======
+   parsedBody match {
+      case JNothing => BadRequest("Bad Json\n")
+      case parsedResponse => {
+        val newClient = new Client()
+        try {
+          val keys = parsedBody.extract[Map[String, Any]].keys.toSet
+          newClient.validateNames(keys)
+          newClient.fromJson(parsedResponse)
+          db.clients.save(newClient)
+          Ok(newClient.getId)
+        }
+        catch {
+          case err: IllegalArgumentException =>
+            BadRequest("Invalid parameter\n")
+        }
       }
     }
   }
@@ -139,5 +156,28 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
     
   }
   */
+
+  post("/api/jobs") {
+    parsedBody match {
+      case JNothing => BadRequest("Bad Json\n")
+      case parsedResponse => {
+        val newJob = new Job()
+        try {
+          val keys = parsedBody.extract[Map[String, Any]].keys.toSet
+          val category = db.categories.all.map(x => x.getId)
+          newJob.validateNames(keys)
+          newJob.fromJson(parsedResponse)
+          newJob.validateCategoryId(category)
+          db.jobs.save(newJob)
+          Ok(newJob.getId)
+        }
+        catch {
+            case err: IllegalArgumentException =>
+              BadRequest("Invalid parameter\n")
+        }
+      } 
+    }
+  }
+  
 }
 

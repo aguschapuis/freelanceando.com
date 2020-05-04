@@ -1,9 +1,6 @@
 package models
 
-import org.json4s.JValue
-import org.json4s.JString
-import org.json4s.DefaultFormats
-
+import org.json4s.{JValue, JInt, JString, DefaultFormats, JNothing}
 
 /* Object companion of class Category */
 object Client extends ModelCompanion[Client] {
@@ -31,18 +28,24 @@ class Client() extends Model[Client] {
   def getCountry_code: String = country_code
   def getTotal_spend: Int = total_spend
 
-
   override def fromJson(jsonValue: JValue): Client = {
     // TODO Parse jsonValue here and assign the values to
     // the instance attributes.
     super.fromJson(jsonValue)
     (jsonValue \ "username") match {
+      case JNothing =>
       case JString(value) => username = value.toString
-      case _ =>  // Do nothing, things may not have an id
+      case _ => throw new IllegalArgumentException // Do nothing, things may not have an id
     }
     (jsonValue \ "country_code") match {
+      case JNothing =>
       case JString(value) => country_code = value.toString
-      case _ =>  // Do nothing, things may not have an id
+      case _ => throw new IllegalArgumentException
+    }
+    (jsonValue \ "total_spend") match {
+      case JNothing =>
+      case JInt(value) => total_spend = value.toInt
+      case _ => throw new IllegalArgumentException
     }
     this  // Return a reference to this object.
   }
@@ -51,8 +54,16 @@ class Client() extends Model[Client] {
     super.toMap + ("username" -> username, "country_code"-> country_code)
   }
 
-
   def IncrementTotal_spend(amount : Int) : Unit = {
     this.total_spend =+ amount
   }
+  
+  override def validateNames(names: Set[String]): Unit = {
+    val validNames: Set[String] = this.toMap.keys.toSet - "id"
+    names.subsetOf(validNames) match {
+      case false => throw new IllegalArgumentException
+      case _ =>
+    }
+  }
+  
 }
