@@ -1,6 +1,6 @@
 package models
 
-import org.json4s.{DefaultFormats, JValue, JInt, JString, JArray}
+import org.json4s.{DefaultFormats, JValue, JInt, JString, JArray, JNothing}
 import org.json4s.DefaultFormats
 
 
@@ -47,33 +47,58 @@ class Freelancer extends Model[Freelancer] {
                                             
   
   override def fromJson(jsonValue: JValue): Freelancer = {
+    def JInt2Int(x: JValue): Int = {
+      x match {
+        case JInt(x) => x.toInt
+        case _ => throw new IllegalArgumentException
+      }
+    }
+
     // TODO Parse jsonValue here and assign the values to
     // the instance attributes.
     super.fromJson(jsonValue)
     (jsonValue \ "username") match {
+      case JNothing =>
       case JString(value) => username = value.toString
-      case _ =>
+      case _ => throw new IllegalArgumentException
     }
     (jsonValue \ "country_code") match {
+      case JNothing =>
       case JString(value) => country_code = value.toString
-      case _ =>
+      case _ => throw new IllegalArgumentException
     }
     (jsonValue \ "category_ids") match {
-      case JArray(value) => category_ids = value.map { case JInt(x) => x.toInt } // hay que chequear Ids validos?
-      case _ =>
+      case JNothing =>
+      case JArray(list) => category_ids = list.map(JInt2Int)
+      case _ => throw new IllegalArgumentException
     }
     (jsonValue \ "reputation") match {
+      case JNothing => reputation = "Junior"
       case JString(value) => reputation = value.toString
-      case _ => reputation = "Junior"
+      case _ => throw new IllegalArgumentException
     }
     (jsonValue \ "hourly_price") match {
+      case JNothing =>
       case JInt(value) => hourly_price = value.toInt
-      case _ =>
+      case _ => throw new IllegalArgumentException
     }
 
     this // Return a reference to this object.
   }
-  
-  
-  
+
+
+  override def validateNames(names: Set[String]): Unit = {
+    val validNames: Set[String] = this.toMap.keys.toSet - "id"
+    names.subsetOf(validNames) match {
+      case false => throw new IllegalArgumentException
+      case _ =>
+    }
+  }
+
+  def validateCategoryIds(validIds: List[Int]): Unit = {
+    this.category_ids.toSet.subsetOf(validIds.toSet) match {
+      case false => throw new IllegalArgumentException
+      case _ =>
+    }
+  }
 }
