@@ -19,12 +19,18 @@ object Client extends ModelCompanion[Client] {
 
 
 
-class Client extends Model[Client] {
+class Client() extends Model[Client] {
 
   // TODO complete here with the methods for your model
   // Attributes
   protected[models] var username: String = "DefaultStr"
-  protected[models] var country_code: String = "DefaultStr"  
+  protected[models] var country_code: String = "DefaultStr"
+  protected[models] var total_spend: Int = 0
+  
+  def getUsername: String = username
+  def getCountry_code: String = country_code
+  def getTotal_spend: Int = total_spend
+
 
   override def fromJson(jsonValue: JValue): Client = {
     // TODO Parse jsonValue here and assign the values to
@@ -44,5 +50,9 @@ class Client extends Model[Client] {
   override def toMap: Map[String, Any] = {
     super.toMap + ("username" -> username, "country_code"-> country_code)
   }
-  
+
+
+  def IncrementTotal_spend(amount : Int) : Unit = {
+    this.total_spend =+ amount
+  }
 }
