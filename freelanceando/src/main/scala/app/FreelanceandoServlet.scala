@@ -1,6 +1,6 @@
 package app
 
-import org.json4s.{DefaultFormats, Formats, JValue, JNothing}
+import org.json4s.{DefaultFormats, Formats, JValue, JNothing, JInt}
 
 import org.scalatra._
 import org.scalatra.json._
@@ -97,14 +97,50 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
 
   get("/api/jobs") { Ok(db.jobs.all.map((x: Job) => x.toMap)) }
 
-/*
-  post("api/posts/pay"){
-    val id: Int
-    val amount : Int
-    val clientPay : Client
-    val freelancerPay : Frelancer
-    val jobPay : Job
+  post("/api/posts/pay"){
+    val jsonParsed:JValue = parse(request.body)
+
+    try {
+      val freelancertId: Int = (jsonParsed \ "freelancert_id").extract[Int]
+      val jobId: Int = (jsonParsed \ "job_id").extract[Int]
+      val amount: Int = (jsonParsed \ "amount").extract[Int]
+      
+      db.freelancers.get(freelancertId) match {
+        case None => throw new IllegalArgumentException
+        case Some(freelancer) => {
+          db.jobs.get(jobId) match {
+            case None => throw new IllegalArgumentException
+            case Some(job) => {
+              val clientId: Int = job.getClient_id
+              db.clients.get(clientId) match {
+                case None => throw new IllegalArgumentException
+                case Some(client) => {
+                  // Efectuamos el pago:
+                  freelancer.IncrementTotal_hourly_price(amount)
+                  client.IncrementTotal_spend(amount)
+                  db.freelancers.write
+                  db.clients.write
+                  Ok()
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    catch {
+      case err1: org.json4s.MappingException =>
+        BadRequest("Invalid parameter\n")
+      case err2: IllegalArgumentException =>
+        BadRequest("Invalid parameter\n")
+    }
     
+    /*
+    //val id: Int
+    //val amount: Int
+    //val clientPay: Client
+    //val freelancerPay: Frelancer
+    //val jobPay: Job
     try {
       id = params("freelancer_id").toInt
       db.freelancers.get(id) match {
@@ -142,11 +178,8 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
     }
 
     clientPay.IncrementTotal_spend(amount)
-    freelancerPay.IncrementHourly_price(amount)
-    
-    
+    freelancerPay.IncrementHourly_price(amount) */
   }
-  */
 
   post("/api/jobs") {
     parsedBody match {

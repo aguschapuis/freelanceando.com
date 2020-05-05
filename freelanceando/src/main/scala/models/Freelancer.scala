@@ -100,4 +100,8 @@ class Freelancer extends Model[Freelancer] {
       case _ =>
     }
   }
+
+  def IncrementTotal_hourly_price(amount: Int): Unit = {
+    this.hourly_price += amount
+  }
 }

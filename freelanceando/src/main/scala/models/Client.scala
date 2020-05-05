@@ -51,7 +51,17 @@ class Client() extends Model[Client] {
   }
   
   override def toMap: Map[String, Any] = {
-    super.toMap + ("username" -> username, "country_code"-> country_code)
+    super.toMap + ("username" -> username,
+                  "country_code"-> country_code,
+                  "total_spend" -> total_spend)
+  }
+
+  override def validateKeys(keys: Set[String]): Unit = {
+    val validKeys: Set[String] = this.toMap.keys.toSet - ("id", "total_spend")
+    keys == validKeys match {
+      case false => throw new IllegalArgumentException
+      case _ =>
+    }
   }
 
   def IncrementTotal_spend(amount : Int) : Unit = {

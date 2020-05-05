@@ -18,6 +18,8 @@ class Job extends Model[Job]{
   protected[models] var preferred_country: String = "DefaultStr"
   protected[models] var hourly_price: Int = 0
 
+  def getClient_id: Int = client_id
+
   override def toMap: Map[String , Any] = {
     super.toMap + ("title" -> title,
                   "category_id" -> category,
