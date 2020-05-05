@@ -61,14 +61,6 @@ class Job extends Model[Job]{
     }
     this
   }
-  
-  override def validateNames(names: Set[String]): Unit = {
-    val validNames: Set[String] = this.toMap.keys.toSet - "id"
-    names.subsetOf(validNames) match {
-      case false => throw new IllegalArgumentException
-      case _ =>
-    }
-  }
 
   def validateCategoryId(validIds: List[Int]): Unit = {
     validIds.contains(this.category) match {

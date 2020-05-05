@@ -86,10 +86,9 @@ class Freelancer extends Model[Freelancer] {
     this // Return a reference to this object.
   }
 
-
-  override def validateNames(names: Set[String]): Unit = {
-    val validNames: Set[String] = this.toMap.keys.toSet - "id"
-    names.subsetOf(validNames) match {
+  override def validateKeys(keys: Set[String]): Unit = {
+    val validKeys: Set[String] = this.toMap.keys.toSet - "id"
+    keys == validKeys || keys == validKeys - "reputation" match {
       case false => throw new IllegalArgumentException
       case _ =>
     }

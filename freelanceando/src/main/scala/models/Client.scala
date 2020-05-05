@@ -55,15 +55,7 @@ class Client() extends Model[Client] {
   }
 
   def IncrementTotal_spend(amount : Int) : Unit = {
-    this.total_spend =+ amount
-  }
-  
-  override def validateNames(names: Set[String]): Unit = {
-    val validNames: Set[String] = this.toMap.keys.toSet - "id"
-    names.subsetOf(validNames) match {
-      case false => throw new IllegalArgumentException
-      case _ =>
-    }
+    this.total_spend += amount
   }
   
 }

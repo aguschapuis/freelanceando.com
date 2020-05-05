@@ -50,9 +50,9 @@ trait Model[M <: Model[M]] { self: M =>
     self
   }
 
-  def validateNames(names: Set[String]): Unit = {
-    val validNames: Set[String] = this.toMap.keys.toSet
-    names.subsetOf(validNames) match {
+  def validateKeys(keys: Set[String]): Unit = {
+    val validKeys: Set[String] = this.toMap.keys.toSet - "id"
+    keys == validKeys match {
       case false => throw new IllegalArgumentException
       case _ =>
     }
