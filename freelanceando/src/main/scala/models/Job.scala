@@ -69,5 +69,12 @@ class Job extends Model[Job]{
     }
   }
 
+  def validateClientId(validIds: List[Int]): Unit = {
+    validIds.contains(this.client_id) match {
+      case false => throw new IllegalArgumentException
+      case _ =>
+    }
+  }
+
 }
 

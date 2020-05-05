@@ -156,9 +156,11 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
         try {
           val keys = parsedBody.extract[Map[String, Any]].keys.toSet
           val category = db.categories.all.map(x => x.getId)
+          val clients = db.clients.all.map(x => x.getId)
           newJob.validateKeys(keys)
           newJob.fromJson(parsedResponse)
           newJob.validateCategoryId(category)
+          newJob.validateClientId(clients)
           db.jobs.save(newJob)
           Ok(newJob.getId)
         }
