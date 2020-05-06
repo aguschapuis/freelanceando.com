@@ -2,6 +2,7 @@ package models
 
 import org.json4s.{DefaultFormats, JValue, JInt}
 import models.database.DatabaseTable
+import scala.collection.mutable.Map._
 
 /* This companion allows us to create models from
  * the DatabaseTable class.
@@ -48,6 +49,12 @@ trait Model[M <: Model[M]] { self: M =>
       case _ =>  // Do nothing, things may not have an id
     }
     self
+  }
+
+  def filter(dict : Map[String, Any]): Boolean = {
+    val dictModel : Map[String, Any] = dict.filter(t =>
+                                                this.toMap.contains(t._1)).toMap
+    dictModel.toSet.subsetOf(this.toMap.toSet)
   }
 
   def validateKeys(keys: Set[String]): Unit = {

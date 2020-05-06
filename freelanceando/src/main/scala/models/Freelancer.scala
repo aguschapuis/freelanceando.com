@@ -100,6 +100,17 @@ class Freelancer extends Model[Freelancer] {
       case _ =>
     }
   }
+  
+  override def filter(dict : Map[String, Any]): Boolean = {
+    val dictFreelancer : Map[String, Any] = dict - ("id","category_ids")
+    var categoryList : List[Int] = dict.get("category_ids").toList.map(a =>
+                                                               a.toString.toInt)
+
+    super.filter(dict) && (dictFreelancer.toSet.subsetOf(
+                                     (this.toMap - ("id","category_ids")).toSet)
+                               
+    && categoryList.toSet.subsetOf(this.toMap.get("category_ids").toSet))
+  }
 
   def IncrementTotal_hourly_price(amount: Int): Unit = {
     this.hourly_price += amount
