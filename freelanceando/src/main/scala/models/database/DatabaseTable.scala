@@ -58,7 +58,7 @@ class DatabaseTable[M <: Model[M]](val filename: String) {
     // TODO implement this function taking advatage of OOP!
 
     _instances.values.filter((a : M) =>
-                             (attributes.toSet.subsetOf(a.toMap.toSet))).toList
+                             (a.filter(attributes))).toList
   }
 
   /* ** YOU DON'T NEED TO TOUCH ANYTHING BELOW THIS LINE **
