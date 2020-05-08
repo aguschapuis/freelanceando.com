@@ -19,7 +19,7 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
   // Here you have to complete all the API endopoints.
   get("/api/categories") { Ok(db.categories.all.map((x: Category) => x.toMap)) }
   
-  //get("/api/freelancers") { Ok(db.freelancers.all.map((x: Freelancer) => x.toMap)) }
+  get("/api/freelancers") { Ok(db.freelancers.all.map((x: Freelancer) => x.toMap)) }
 
   get("/api/freelancers/:id") {
     val id0: String = params("id")
@@ -166,7 +166,6 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
       } 
     }
   }
-
 
   get("api/freelancers"){
     parsedBody match {
