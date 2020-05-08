@@ -181,6 +181,24 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
     freelancerPay.IncrementHourly_price(amount) */
   }
 
+  get("/api/posts/"){
+    val jsonParsed:JValue = parse(request.body)
+    try {
+      val atributes = Map(
+        "preferred_country" -> (jsonParsed \ "preferred_country").extract[String] ,
+        "category_id" -> (jsonParsed \ "category_id").extract[List[Int]],
+        "preferred_reputation" -> (jsonParsed \ "preferred_reputation").extract[String],
+        "hourly_price" -> (jsonParsed \ "hourly_price").extract[Int]
+      )
+      Ok(db.jobs.filter(atributes).map((x: Job) => x.toMap)) 
+    }
+    catch {
+      case JNothing => 
+      case err2: org.json4s.MappingException =>
+        BadRequest("Invalid parameter\n")
+    }
+  }
+
   post("/api/jobs") {
     parsedBody match {
       case JNothing => BadRequest("Bad Json\n")
