@@ -57,8 +57,7 @@ class DatabaseTable[M <: Model[M]](val filename: String) {
   def filter(attributes: Map[String, Any]): List[M] = {
     // TODO implement this function taking advatage of OOP!
 
-    _instances.values.filter((a : M) =>
-                             (a.filter(attributes))).toList
+    all.filter((a : M) => (a.matchWithFilters(attributes)))
   }
 
   /* ** YOU DON'T NEED TO TOUCH ANYTHING BELOW THIS LINE **
