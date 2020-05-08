@@ -134,69 +134,13 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
       case err2: IllegalArgumentException =>
         BadRequest("Invalid parameter\n")
     }
-    
-    /*
-    //val id: Int
-    //val amount: Int
-    //val clientPay: Client
-    //val freelancerPay: Frelancer
-    //val jobPay: Job
-    try {
-      id = params("freelancer_id").toInt
-      db.freelancers.get(id) match {
-        case Some(freelancer) => freelancerPay = freelancer
-        case None => BadRequest(s"No such freelancer with the id:${id}\n")
-      }
-    }
-    catch {
-      case err: java.lang.NumberFormatException =>
-        BadRequest(s"The id:${id0} is not an Integer\n")
-    }
-    
-    try {
-      id = params("job_id").toInt
-      db.jobs.get(id) match {
-        case Some(job) => jobPay = job
-        case None => BadRequest(s"No such job with the id:${id}\n")
-      }
-    }
-    catch {
-      case err: java.lang.NumberFormatException =>
-        BadRequest(s"The id:${id0} is not an Integer\n")
-    }
-    
-    try {
-      amount = params("amount").toInt
-      db.clients.get(jobPay._client_id) match {          // Deberia ir getClient
-        case Some(client) => clientPay = client
-        case None => BadRequest(s"No such client with the id:${id}\n")
-      }
-    }
-    catch {
-      case err: java.lang.NumberFormatException =>
-        BadRequest(s"The id:${id0} is not an Integer\n")
-    }
-
-    clientPay.IncrementTotal_spend(amount)
-    freelancerPay.IncrementHourly_price(amount) */
   }
 
   get("/api/posts/"){
     val jsonParsed:JValue = parse(request.body)
-    try {
-      val atributes = Map(
-        "preferred_country" -> (jsonParsed \ "preferred_country").extract[String] ,
-        "category_id" -> (jsonParsed \ "category_id").extract[List[Int]],
-        "preferred_reputation" -> (jsonParsed \ "preferred_reputation").extract[String],
-        "hourly_price" -> (jsonParsed \ "hourly_price").extract[Int]
-      )
-      Ok(db.jobs.filter(atributes).map((x: Job) => x.toMap)) 
-    }
-    catch {
-      case JNothing => 
-      case err2: org.json4s.MappingException =>
-        BadRequest("Invalid parameter\n")
-    }
+    val atributes = jsonParsed.extract[Map[String, Any]]
+    
+    Ok(db.jobs.filter(atributes).map((x: Job) => x.toMap))
   }
 
   post("/api/jobs") {
