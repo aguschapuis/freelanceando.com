@@ -51,7 +51,7 @@ trait Model[M <: Model[M]] { self: M =>
     self
   }
 
-  def filter(dict : Map[String, Any]): Boolean = {
+  def matchWithFilters(dict : Map[String, Any]): Boolean = {
     val dictModel : Map[String, Any] = dict.filter(t =>
                                                 this.toMap.contains(t._1)).toMap
     dictModel.toSet.subsetOf(this.toMap.toSet)
