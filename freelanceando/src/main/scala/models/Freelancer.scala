@@ -102,15 +102,13 @@ class Freelancer extends Model[Freelancer] {
   }
 
   override def matchWithFilters(dict : Map[String, Any]): Boolean = {
-    val dictFreelancer : Map[String, Any] = dict - ("id","category_ids")
-
-    //var categoryList : List[Int] = dict.get("category_ids").toList.map(a =>
-    //                                                           a.toString.toInt)
+    val dictFreelancer = dict - ("id","category_ids")
+    val categryList = dict.get("category_ids").toList.map(a => a.toString.toInt)
 
     super.matchWithFilters(dict) && (dictFreelancer.toSet.subsetOf(
                                      (this.toMap - ("id","category_ids")).toSet) 
-                               
-    && categoryList.toSet.subsetOf(this.toMap.get("category_ids").toSet))
+                              
+    && categryList.toSet.subsetOf(this.toMap.get("category_ids").toSet))
   }
 
   def IncrementTotal_hourly_price(amount: Int): Unit = {

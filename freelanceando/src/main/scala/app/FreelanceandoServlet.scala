@@ -172,11 +172,10 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
       case JNothing => BadRequest("Bad Json\n")
       case parsedResponse => {
         try {
-          val list : List[Freelancer]
-          val dict : Map[String, Any]= parsedBody.extract[Map[String, Any]]
+          val dict = parsedBody.extract[Map[String, Any]]
+          var list = db.freelancers.filter(dict)
           val keys = dict.keys.toSet
           //Frelacer.validateKeys(keys)
-          list = db.freelancers.filter(dict)
           if (list.isEmpty) Ok(db.freelancers.all) else Ok(list)
         }
         catch {
