@@ -19,7 +19,7 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
   // Here you have to complete all the API endopoints.
   get("/api/categories") { Ok(db.categories.all.map((x: Category) => x.toMap)) }
   
-  get("/api/freelancers") { Ok(db.freelancers.all.map((x: Freelancer) => x.toMap)) }
+  //get("/api/freelancers") { Ok(db.freelancers.all.map((x: Freelancer) => x.toMap)) }
 
   get("/api/freelancers/:id") {
     val id0: String = params("id")
@@ -204,6 +204,36 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
       } 
     }
   }
-  
+
+
+  get("api/freelancers"){
+    BadRequest("Invalid parameter\n")
+    /*parsedBody match {
+      case JNothing => BadRequest("Bad Json\n")
+      case parsedResponse => {
+        //val newJob = new Job()
+        try {
+          val dict : Map[String, Any]= parsedBody.extract[Map[String, Any]]
+          val list : List[Freelancer] = db.freelancers.filter(dict)
+          if (list.isEmpty) Ok(db.freelancers.all) else Ok(list)
+          /*newFreelancer.validateKeys(keys)
+          
+          //val category = db.categories.all.map(x => x.getId)
+          val clients = db.clients.all.map(x => x.getId)
+          newJob.validateKeys(keys)
+          newJob.fromJson(parsedResponse)
+          newJob.validateCategoryId(category)
+          newJob.validateClientId(clients)
+          db.jobs.save(newJob)
+          Ok(newJob.getId)*/
+        }
+        catch {
+            case err: IllegalArgumentException =>
+              BadRequest("Invalid parameter\n")
+        }
+       }
+      }*/
+   }
+
 }
 
