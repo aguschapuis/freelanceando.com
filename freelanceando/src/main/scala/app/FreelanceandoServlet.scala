@@ -134,51 +134,6 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
       case err2: IllegalArgumentException =>
         BadRequest("Invalid parameter\n")
     }
-    
-    /*
-    //val id: Int
-    //val amount: Int
-    //val clientPay: Client
-    //val freelancerPay: Frelancer
-    //val jobPay: Job
-    try {
-      id = params("freelancer_id").toInt
-      db.freelancers.get(id) match {
-        case Some(freelancer) => freelancerPay = freelancer
-        case None => BadRequest(s"No such freelancer with the id:${id}\n")
-      }
-    }
-    catch {
-      case err: java.lang.NumberFormatException =>
-        BadRequest(s"The id:${id0} is not an Integer\n")
-    }
-    
-    try {
-      id = params("job_id").toInt
-      db.jobs.get(id) match {
-        case Some(job) => jobPay = job
-        case None => BadRequest(s"No such job with the id:${id}\n")
-      }
-    }
-    catch {
-      case err: java.lang.NumberFormatException =>
-        BadRequest(s"The id:${id0} is not an Integer\n")
-    }
-    
-    try {
-      amount = params("amount").toInt
-      db.clients.get(jobPay._client_id) match {          // Deberia ir getClient
-        case Some(client) => clientPay = client
-        case None => BadRequest(s"No such client with the id:${id}\n")
-      }
-    }
-    catch {
-      case err: java.lang.NumberFormatException =>
-        BadRequest(s"The id:${id0} is not an Integer\n")
-    }
-
-    clientPay.IncrementTotal_spend(amount)
-    freelancerPay.IncrementHourly_price(amount) */
   }
 
   get("/api/posts/"){
@@ -225,32 +180,23 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
 
 
   get("api/freelancers"){
-    BadRequest("Invalid parameter\n")
-    /*parsedBody match {
+    parsedBody match {
       case JNothing => BadRequest("Bad Json\n")
       case parsedResponse => {
-        //val newJob = new Job()
         try {
+          val list : List[Freelancer]
           val dict : Map[String, Any]= parsedBody.extract[Map[String, Any]]
-          val list : List[Freelancer] = db.freelancers.filter(dict)
+          val keys = dict.keys.toSet
+          //Frelacer.validateKeys(keys)
+          list = db.freelancers.filter(dict)
           if (list.isEmpty) Ok(db.freelancers.all) else Ok(list)
-          /*newFreelancer.validateKeys(keys)
-          
-          //val category = db.categories.all.map(x => x.getId)
-          val clients = db.clients.all.map(x => x.getId)
-          newJob.validateKeys(keys)
-          newJob.fromJson(parsedResponse)
-          newJob.validateCategoryId(category)
-          newJob.validateClientId(clients)
-          db.jobs.save(newJob)
-          Ok(newJob.getId)*/
         }
         catch {
             case err: IllegalArgumentException =>
               BadRequest("Invalid parameter\n")
         }
        }
-      }*/
+      }
    }
 
 }

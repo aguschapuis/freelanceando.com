@@ -100,14 +100,15 @@ class Freelancer extends Model[Freelancer] {
       case _ =>
     }
   }
-  
-  override def filter(dict : Map[String, Any]): Boolean = {
-    val dictFreelancer : Map[String, Any] = dict - ("id","category_ids")
-    var categoryList : List[Int] = dict.get("category_ids").toList.map(a =>
-                                                               a.toString.toInt)
 
-    super.filter(dict) && (dictFreelancer.toSet.subsetOf(
-                                     (this.toMap - ("id","category_ids")).toSet)
+  override def matchWithFilters(dict : Map[String, Any]): Boolean = {
+    val dictFreelancer : Map[String, Any] = dict - ("id","category_ids")
+
+    //var categoryList : List[Int] = dict.get("category_ids").toList.map(a =>
+    //                                                           a.toString.toInt)
+
+    super.matchWithFilters(dict) && (dictFreelancer.toSet.subsetOf(
+                                     (this.toMap - ("id","category_ids")).toSet) 
                                
     && categoryList.toSet.subsetOf(this.toMap.get("category_ids").toSet))
   }
