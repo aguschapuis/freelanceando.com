@@ -16,10 +16,30 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
     contentType = formats("json")
   }
   
-  // Here you have to complete all the API endopoints.
+  /*--------------END POINTS CATEGORIES-------------*/
+
   get("/api/categories") { Ok(db.categories.all.map((x: Category) => x.toMap)) }
   
-  get("/api/freelancers") { Ok(db.freelancers.all.map((x: Freelancer) => x.toMap)) }
+  /*--------------END POINTS FREELANCERS-------------*/
+  
+  get("api/freelancers"){
+    parsedBody match {
+      case JNothing => BadRequest("Bad Json\n")
+      case parsedResponse => {
+        try {
+          val dict = parsedBody.extract[Map[String, Any]]
+          var list = db.freelancers.filter(dict)
+          val keys = dict.keys.toSet
+          //Frelacer.validateKeys(keys)
+          if (list.isEmpty) Ok(db.freelancers.all) else Ok(list)
+        }
+        catch {
+            case err: IllegalArgumentException =>
+              BadRequest("Invalid parameter\n")
+        }
+      }
+    }
+  }
 
   get("/api/freelancers/:id") {
     val id0: String = params("id")
@@ -58,6 +78,10 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
     }
   }
 
+  
+
+  /*--------------END POINTS CLIENTS-------------*/
+  
   get("/api/clients") { Ok(db.clients.all.map((x: Client) => x.toMap)) }
   
   post("/api/clients") {
@@ -95,11 +119,11 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
     }
   }
 
-  get("/api/jobs") { Ok(db.jobs.all.map((x: Job) => x.toMap)) }
+  /*--------------END POINTS PAYS-------------*/
 
   post("/api/posts/pay"){
     val jsonParsed:JValue = parse(request.body)
-
+    
     try {
       val freelancertId: Int = (jsonParsed \ "freelancert_id").extract[Int]
       val jobId: Int = (jsonParsed \ "job_id").extract[Int]
@@ -130,19 +154,23 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
     }
     catch {
       case err1: org.json4s.MappingException =>
-        BadRequest("Invalid parameter\n")
+      BadRequest("Invalid parameter\n")
       case err2: IllegalArgumentException =>
-        BadRequest("Invalid parameter\n")
+      BadRequest("Invalid parameter\n")
     }
   }
 
+  /*--------------END POINTS JOBS-------------*/
+
+  get("/api/jobs") { Ok(db.jobs.all.map((x: Job) => x.toMap)) }
+  
   get("/api/posts/"){
     val jsonParsed:JValue = parse(request.body)
     val atributes = jsonParsed.extract[Map[String, Any]]
     
     Ok(db.jobs.filter(atributes).map((x: Job) => x.toMap))
   }
-
+  
   post("/api/jobs") {
     parsedBody match {
       case JNothing => BadRequest("Bad Json\n")
@@ -167,24 +195,4 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
     }
   }
 
-  get("api/freelancers"){
-    parsedBody match {
-      case JNothing => BadRequest("Bad Json\n")
-      case parsedResponse => {
-        try {
-          val dict = parsedBody.extract[Map[String, Any]]
-          var list = db.freelancers.filter(dict)
-          val keys = dict.keys.toSet
-          //Frelacer.validateKeys(keys)
-          if (list.isEmpty) Ok(db.freelancers.all) else Ok(list)
-        }
-        catch {
-            case err: IllegalArgumentException =>
-              BadRequest("Invalid parameter\n")
-        }
-       }
-      }
-   }
-
 }
-
