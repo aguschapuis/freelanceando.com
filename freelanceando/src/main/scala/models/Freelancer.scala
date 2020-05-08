@@ -29,6 +29,7 @@ class Freelancer extends Model[Freelancer] {
   protected[models] var category_ids: List[Int] = List()
   protected[models] var reputation: String = "DefaultStr"
   protected[models] var hourly_price: Int = 0
+  protected[models] var total_earning: Int = 0
 
   // Getters
   def getUsername: String = username
@@ -42,7 +43,8 @@ class Freelancer extends Model[Freelancer] {
                   "country_code" -> country_code,
                   "category_ids" -> category_ids,
                   "reputation" -> reputation,
-                  "hourly_price" -> hourly_price)
+                  "hourly_price" -> hourly_price,
+                  "total_earning" -> total_earning)
   }
                                             
   
@@ -82,7 +84,11 @@ class Freelancer extends Model[Freelancer] {
       case JInt(value) => hourly_price = value.toInt
       case _ => throw new IllegalArgumentException
     }
-
+    (jsonValue \ "total_earning") match {
+      case JNothing => total_earning = 0
+      case JInt(value) => total_earning = value.toInt
+      case _ => throw new IllegalArgumentException
+    }
     this // Return a reference to this object.
   }
 
@@ -111,7 +117,7 @@ class Freelancer extends Model[Freelancer] {
     && categryList.toSet.subsetOf(this.toMap.get("category_ids").toSet))
   }
 
-  def IncrementTotal_hourly_price(amount: Int): Unit = {
-    this.hourly_price += amount
+  def IncrementTotal_earning(amount: Int): Unit = {
+    this.total_earning += amount
   }
 }

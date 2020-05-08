@@ -22,6 +22,8 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
   
   /*--------------END POINTS FREELANCERS-------------*/
   
+  get("/api/freelancers") { Ok(db.freelancers.all.map((x: Freelancer) => x.toMap)) }
+
   get("api/freelancers"){
     parsedBody match {
       case JNothing => BadRequest("Bad Json\n")
@@ -119,49 +121,9 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
     }
   }
 
-  /*--------------END POINTS PAYS-------------*/
-
-  post("/api/posts/pay"){
-    val jsonParsed:JValue = parse(request.body)
-    
-    try {
-      val freelancertId: Int = (jsonParsed \ "freelancert_id").extract[Int]
-      val jobId: Int = (jsonParsed \ "job_id").extract[Int]
-      val amount: Int = (jsonParsed \ "amount").extract[Int]
-      
-      db.freelancers.get(freelancertId) match {
-        case None => throw new IllegalArgumentException
-        case Some(freelancer) => {
-          db.jobs.get(jobId) match {
-            case None => throw new IllegalArgumentException
-            case Some(job) => {
-              val clientId: Int = job.getClient_id
-              db.clients.get(clientId) match {
-                case None => throw new IllegalArgumentException
-                case Some(client) => {
-                  // Efectuamos el pago:
-                  freelancer.IncrementTotal_hourly_price(amount)
-                  client.IncrementTotal_spend(amount)
-                  db.freelancers.write
-                  db.clients.write
-                  Ok()
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    catch {
-      case err1: org.json4s.MappingException =>
-      BadRequest("Invalid parameter\n")
-      case err2: IllegalArgumentException =>
-      BadRequest("Invalid parameter\n")
-    }
-  }
-
+  
   /*--------------END POINTS JOBS-------------*/
-
+  
   get("/api/jobs") { Ok(db.jobs.all.map((x: Job) => x.toMap)) }
   
   get("/api/posts/"){
@@ -188,10 +150,51 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
           Ok(newJob.getId)
         }
         catch {
-            case err: IllegalArgumentException =>
-              BadRequest("Invalid parameter\n")
+          case err: IllegalArgumentException =>
+          BadRequest("Invalid parameter\n")
         }
       } 
+    }
+  }
+  
+  /*--------------END POINTS PAYS-------------*/
+
+  post("/api/posts/pay"){
+    val jsonParsed:JValue = parse(request.body)
+    
+    try {
+      val freelancertId: Int = (jsonParsed \ "freelancert_id").extract[Int]
+      val jobId: Int = (jsonParsed \ "job_id").extract[Int]
+      val amount: Int = (jsonParsed \ "amount").extract[Int]
+      
+      db.freelancers.get(freelancertId) match {
+        case None => throw new IllegalArgumentException
+        case Some(freelancer) => {
+          db.jobs.get(jobId) match {
+            case None => throw new IllegalArgumentException
+            case Some(job) => {
+              val clientId: Int = job.getClient_id
+              db.clients.get(clientId) match {
+                case None => throw new IllegalArgumentException
+                case Some(client) => {
+                  // Efectuamos el pago:
+                  freelancer.IncrementTotal_earning(amount)
+                  client.IncrementTotal_spend(amount)
+                  db.freelancers.write
+                  db.clients.write
+                  Ok()
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    catch {
+      case err1: org.json4s.MappingException =>
+      BadRequest("Invalid parameter\n")
+      case err2: IllegalArgumentException =>
+      BadRequest("Invalid parameter\n")
     }
   }
 
