@@ -51,10 +51,14 @@ trait Model[M <: Model[M]] { self: M =>
     self
   }
 
-  def matchWithFilters(dict : Map[String, Any]): Boolean = {
-    val dictModel : Map[String, Any] = dict.filter(t =>
-                                                this.toMap.contains(t._1)).toMap
-    dictModel.toSet.subsetOf(this.toMap.toSet)
+  def matchWithFilters(attributes: Map[String, Any]): Boolean = {
+    val validFilterKeys: Set[String] = Set("preferred_country",
+                                          "category_id",
+                                          "preferred_reputation")
+    attributes.keys.toSet.subsetOf(validFilterKeys) match {
+      case true => attributes.toSet.subsetOf(this.toMap.toSet)
+      case _ => false
+    }
   }
 
   def validateKeys(keys: Set[String]): Unit = {

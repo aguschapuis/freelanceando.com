@@ -107,14 +107,23 @@ class Freelancer extends Model[Freelancer] {
     }
   }
 
-  override def matchWithFilters(dict : Map[String, Any]): Boolean = {
-    val dictFreelancer = dict - ("id","category_ids")
-    val categryList = dict.get("category_ids").toList.map(a => a.toString.toInt)
-
-    super.matchWithFilters(dict) && (dictFreelancer.toSet.subsetOf(
-                                     (this.toMap - ("id","category_ids")).toSet) 
-                              
-    && categryList.toSet.subsetOf(this.toMap.get("category_ids").toSet))
+  override def matchWithFilters(attributes: Map[String, Any]): Boolean = {
+    val validFilterKeys: Set[String] = Set("country_code",
+                                          "category_id",
+                                          "reputation")
+    attributes.keys.toSet.subsetOf(validFilterKeys) match {
+      case true => {
+        attributes.contains("category_id") match {
+          case true => {
+            val id: Int = attributes("category_id").toString.toInt
+            this.category_ids.contains(id) &&
+              (attributes - "category_id").toSet.subsetOf(this.toMap.toSet)
+          }
+          case false => attributes.toSet.subsetOf(this.toMap.toSet)
+        }
+      }
+      case _ => false
+    }
   }
 
   def IncrementTotal_earning(amount: Int): Unit = {
