@@ -84,16 +84,11 @@ class Freelancer extends Model[Freelancer] {
       case JInt(value) => hourly_price = value.toInt
       case _ => throw new IllegalArgumentException
     }
-    (jsonValue \ "total_earning") match {
-      case JNothing => total_earning = 0
-      case JInt(value) => total_earning = value.toInt
-      case _ => throw new IllegalArgumentException
-    }
     this // Return a reference to this object.
   }
 
   override def validateKeys(keys: Set[String]): Unit = {
-    val validKeys: Set[String] = this.toMap.keys.toSet - "id"
+    val validKeys: Set[String] = this.toMap.keys.toSet - ("id","total_earning")
     keys == validKeys || keys == validKeys - "reputation" match {
       case false => throw new IllegalArgumentException
       case _ =>

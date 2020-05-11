@@ -8,7 +8,8 @@ import models._
 import models.database.Database
 
 
-class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJsonSupport {
+class FreelanceandoServlet(db : Database) extends ScalatraServlet 
+                                                      with JacksonJsonSupport {
 
   // Before every action runs, set the content type to be in JSON format.
   protected implicit val jsonFormats: Formats = DefaultFormats
@@ -20,26 +21,19 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
 
   get("/api/categories") { Ok(db.categories.all.map((x: Category) => x.toMap)) }
   
+  
   /*--------------END POINTS FREELANCERS-------------*/
   
-  get("/api/freelancers") { Ok(db.freelancers.all.map((x: Freelancer) => x.toMap)) }
-
-  get("api/freelancers"){
-    parsedBody match {
-      case JNothing => BadRequest("Bad Json\n")
-      case parsedResponse => {
-        try {
-          val dict = parsedBody.extract[Map[String, Any]]
-          var list = db.freelancers.filter(dict)
-          val keys = dict.keys.toSet
-          //Frelacer.validateKeys(keys)
-          if (list.isEmpty) Ok(db.freelancers.all) else Ok(list)
-        }
-        catch {
-            case err: IllegalArgumentException =>
-              BadRequest("Invalid parameter\n")
-        }
-      }
+  get("/api/freelancers") {
+    try {
+      val jsonParsed: JValue = parse(request.body)
+      val attributes = parsedBody.extract[Map[String, Any]]
+      Ok(db.freelancers.filter(attributes).map(x => x.toMap))
+    }
+    catch {
+      case e: com.fasterxml.jackson.databind.exc.MismatchedInputException =>
+        // No hubo parámetro de filtro
+        Ok(db.freelancers.all.map((x: Freelancer) => x.toMap))
     }
   }
 
@@ -80,7 +74,6 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
     }
   }
 
-  
 
   /*--------------END POINTS CLIENTS-------------*/
   
@@ -157,6 +150,7 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet with JacksonJs
     }
   }
   
+
   /*--------------END POINTS PAYS-------------*/
 
   post("/api/posts/pay"){
