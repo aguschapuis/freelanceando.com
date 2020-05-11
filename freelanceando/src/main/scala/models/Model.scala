@@ -54,7 +54,8 @@ trait Model[M <: Model[M]] { self: M =>
   def matchWithFilters(attributes: Map[String, Any]): Boolean = {
     val validFilterKeys: Set[String] = Set("preferred_country",
                                           "category_id",
-                                          "preferred_reputation")
+                                          "preferred_reputation",
+                                          "hourly_price")
     attributes.keys.toSet.subsetOf(validFilterKeys) match {
       case true => attributes.toSet.subsetOf(this.toMap.toSet)
       case _ => false

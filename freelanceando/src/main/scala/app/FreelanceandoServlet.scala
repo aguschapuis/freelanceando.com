@@ -21,7 +21,7 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet
 
   get("/api/categories") { Ok(db.categories.all.map((x: Category) => x.toMap)) }
   
-  
+
   /*--------------END POINTS FREELANCERS-------------*/
   
   get("/api/freelancers") {
@@ -120,10 +120,13 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet
   get("/api/jobs") { Ok(db.jobs.all.map((x: Job) => x.toMap)) }
   
   get("/api/posts/"){
-    val jsonParsed:JValue = parse(request.body)
-    val atributes = jsonParsed.extract[Map[String, Any]]
-    
-    Ok(db.jobs.filter(atributes).map((x: Job) => x.toMap))
+    parsedBody match {
+      case JNothing => BadRequest("Bad Json\n")
+      case parsedResponse => {
+        val attributes = parsedResponse.extract[Map[String, Any]]
+        Ok(db.jobs.filter(attributes).map((x: Job) => x.toMap))
+      }
+    }    
   }
   
   post("/api/jobs") {
@@ -154,41 +157,44 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet
   /*--------------END POINTS PAYS-------------*/
 
   post("/api/posts/pay"){
-    val jsonParsed:JValue = parse(request.body)
-    
-    try {
-      val freelancertId: Int = (jsonParsed \ "freelancert_id").extract[Int]
-      val jobId: Int = (jsonParsed \ "job_id").extract[Int]
-      val amount: Int = (jsonParsed \ "amount").extract[Int]
-      
-      db.freelancers.get(freelancertId) match {
-        case None => throw new IllegalArgumentException
-        case Some(freelancer) => {
-          db.jobs.get(jobId) match {
+    parsedBody match {
+      case JNothing => BadRequest("Bad Json\n")
+      case parsedResponse => {
+        try {
+          val freelancertId = (parsedResponse \ "freelancert_id").extract[Int]
+          val jobId: Int = (parsedResponse \ "job_id").extract[Int]
+          val amount: Int = (parsedResponse \ "amount").extract[Int]
+          
+          db.freelancers.get(freelancertId) match {
             case None => throw new IllegalArgumentException
-            case Some(job) => {
-              val clientId: Int = job.getClient_id
-              db.clients.get(clientId) match {
+            case Some(freelancer) => {
+              db.jobs.get(jobId) match {
                 case None => throw new IllegalArgumentException
-                case Some(client) => {
-                  // Efectuamos el pago:
-                  freelancer.IncrementTotal_earning(amount)
-                  client.IncrementTotal_spend(amount)
-                  db.freelancers.write
-                  db.clients.write
-                  Ok()
+                case Some(job) => {
+                  val clientId: Int = job.getClient_id
+                  db.clients.get(clientId) match {
+                    case None => throw new IllegalArgumentException
+                    case Some(client) => {
+                      // Efectuamos el pago:
+                      freelancer.IncrementTotal_earning(amount)
+                      client.IncrementTotal_spend(amount)
+                      db.freelancers.write
+                      db.clients.write
+                      Ok()
+                    }
+                  }
                 }
               }
             }
           }
         }
+        catch {
+          case err1: org.json4s.MappingException =>
+          BadRequest("Invalid parameter\n")
+          case err2: IllegalArgumentException =>
+          BadRequest("Invalid parameter\n")
+        }
       }
-    }
-    catch {
-      case err1: org.json4s.MappingException =>
-      BadRequest("Invalid parameter\n")
-      case err2: IllegalArgumentException =>
-      BadRequest("Invalid parameter\n")
     }
   }
 
