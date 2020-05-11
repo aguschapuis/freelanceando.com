@@ -6,6 +6,8 @@ import org.scalatra._
 import org.scalatra.json._
 import models._
 import models.database.Database
+import org.json4s.JsonAST.JString
+import scala.collection.mutable
 
 
 class FreelanceandoServlet(db : Database) extends ScalatraServlet 
@@ -25,16 +27,27 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet
   /*--------------END POINTS FREELANCERS-------------*/
   
   get("/api/freelancers") {
-    try {
-      val jsonParsed: JValue = parse(request.body)
-      val attributes = parsedBody.extract[Map[String, Any]]
+      var attributes = Map[String, Any]()
+      var listaux = mutable.ListBuffer[(String, Any)]()
+        params.get("country_code") match {
+          case Some(value) => listaux += ("country_code" -> value)
+          case None => 
+        }
+        (params.get("reputation")) match {
+          case Some(value) =>  listaux += "reputation" -> value
+          case None =>  
+        }
+        (params.get("category_ids")) match {
+          case Some(value) =>  listaux += "category_ids" -> value.toList
+          case None =>  
+        }
+        (params.get("hourly_price")) match {
+          case Some(value) =>  listaux += "hourly_price" -> value.toInt
+          case None =>  
+        }
+        attributes = listaux.toMap
+
       Ok(db.freelancers.filter(attributes).map(x => x.toMap))
-    }
-    catch {
-      case e: com.fasterxml.jackson.databind.exc.MismatchedInputException =>
-        // No hubo parámetro de filtro
-        Ok(db.freelancers.all.map((x: Freelancer) => x.toMap))
-    }
   }
 
   get("/api/freelancers/:id") {
