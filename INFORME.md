@@ -32,8 +32,8 @@ contener los datos del usuario cliente y los metodos necesarios para operar sobr
 Se definieron los siguientes atributos:
 
 ```username:``` representa el nombre del usuario
-country_code : representa el codigo del pais
-total_spend : representa el dinero total gastado
+```country_code:``` representa el codigo del pais
+```total_spend:``` representa el dinero total gastado
 
 Los metodos definidos fueron:
 
@@ -57,6 +57,26 @@ Los metodos definidos fueron:
 
 ```IncrementTotal_spend:``` Toma un entero como parametro de entrada y con este incrementa el valor
                del atributo Total_spend. Se decidio crear el metodo para mantener en 
+
+### Class Job
+
+Se definio la clase Job la cual contiene los atributos y metodos necesarios para poder
+contener los datos de cada trabajo y los metodos necesarios para operar sobre estos datos.
+
+Atributos:
+
+```title:``` Titulo del trabajo
+```category:``` Id de la categoria del trabajo
+```client_id:```  Numero de id del cliente
+```preferred_expertise:``` Experiencia que prefiere el cliente que publica el trabajo
+```preferred_country:``` Pais que prefiere el cliente que publica el trabajo
+```hourly_price:``` Precio que se va a pagar por este trabajo (por hora)
+
+Metodos definidos:
+
+```validateCategoryId:``` Metodo que valida que el id de la categoria del trabajo exista entre las categorias ya definidas 
+
+```validateClientId:``` Metodo que controla que el cliente que ofrece el trabajo exista entre los clientes ya registrados en la pagina
 
 ### Preguntas de la catedra:
 
