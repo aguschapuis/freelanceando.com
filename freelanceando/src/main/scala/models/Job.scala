@@ -64,12 +64,36 @@ class Job extends Model[Job]{
     this
   }
 
+  /* Descripcion:
+   *  Controla que la categoria del trabajo posteado exista entre las 
+   *  categorias ya definidas, si esto no es asi se levanta una excepcion
+   *  en caso contrario termina con normalidad.
+   * 
+   * Parametros:
+   *  validIds: Lista de enteros que contiene las categorias existentes
+   * 
+   * Resultado:
+   *  Ninguno
+  */
+
   def validateCategoryId(validIds: List[Int]): Unit = {
     validIds.contains(this.category) match {
       case false => throw new IllegalArgumentException
       case _ =>
     }
   }
+
+  /* Descripcion:
+   *  Controla que el cliente que ofrece el trabajo exista entre los clientes 
+   *  ya registrados en la pagina, si esto no es asi se levanta una excepcion
+   *  en caso contrario termina con normalidad.
+   * 
+   * Parametros:
+   *  validIds: Lista de enteros que contiene los clientes existentes
+   * 
+   * Resultado:
+   *  Ninguno
+  */
 
   def validateClientId(validIds: List[Int]): Unit = {
     validIds.contains(this.client_id) match {
