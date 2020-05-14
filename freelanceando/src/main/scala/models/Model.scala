@@ -84,22 +84,21 @@ trait Model[M <: Model[M]] { self: M =>
     }
   }
 
-
   /* Descripcion:
    *   Controla que todos los elemento del conjunto de entrada coincidan con
-   *   al menos uno de los atributos de la clase y que todos los atributos 
-   *   menos el atributo id esten representados en dicho conjunto, si esto no es
-   *   no es asi se levanta una excepcion en caso contrario termina con no
+   *   al menos uno de los atributos de la clase y que todos los atributos de la 
+   *   Clase menos el atributo id esten representados en dicho conjunto, si esto
+   *   no es asi se levanta una excepcion en caso contrario termina con
    *   normalidad.
    *
    * Parametros:
    *   keys: Conjunto que contiene elementos que pueden coincidir con nombres de
    *         atributos o no.
-   *               
+   *   
    * Resultados:
    *   Ninguno
    */
-  
+
   def validateKeys(keys: Set[String]): Unit = {
     val validKeys: Set[String] = this.toMap.keys.toSet - "id"
     keys == validKeys match {
