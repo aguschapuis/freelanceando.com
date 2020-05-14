@@ -56,6 +56,23 @@ class Client() extends Model[Client] {
                   "total_spend" -> total_spend)
   }
 
+
+  /* Descripcion:
+   *   Metodo sobreescrito que controla que todos los elemento del conjunto de
+   *   entrada coincidan con al menos uno de los atributos de la clase y que
+   *   todos los atributos de la Clase menos el atributo id y total_spend esten
+   *   representados en dicho conjunto, si esto no es asi se levanta una
+   *   excepcion en caso contrario termina con normalidad.
+   *
+   * Parametros:
+   *   keys: Conjunto que contiene elementos que pueden coincidir con nombres de
+   *         atributos o no.
+   * 
+   * Resultados:
+   *   Ninguno
+   */
+
+
   override def validateKeys(keys: Set[String]): Unit = {
     val validKeys: Set[String] = this.toMap.keys.toSet - ("id", "total_spend")
     keys == validKeys match {
@@ -64,8 +81,21 @@ class Client() extends Model[Client] {
     }
   }
 
+
+  /* Descripcion:
+   *   Incrementa el valor del atributo total_spend de acuerdo al valor del   
+   *   argumento que se ingresa como del parametro de entrada.
+   *
+   * Parametros:
+   *   amount: Cantidad de dinero gastado por Cliente en el trabajo encargado al
+   *           al Freelancer.
+   * 
+   * Resultados:
+   *   Ninguno
+   */
+
   def IncrementTotal_spend(amount : Int) : Unit = {
     this.total_spend += amount
   }
-  
+ 
 }
