@@ -33,7 +33,7 @@ trait Model[M <: Model[M]] { self: M =>
   implicit lazy val formats = DefaultFormats
 
   def getId: Int = id  // By using this function, the id can be viewed by others,
-                     // but not modified.
+                       // but not modified.
 
   // Returns a dictionary where keys are the object attributes' names and
   // values are the object attributes' values
@@ -51,6 +51,28 @@ trait Model[M <: Model[M]] { self: M =>
     self
   }
 
+
+  /* Descripcion:
+   *   Controla que el valor de cada uno de los atributos del objeto listados en 
+   *   el diccionario, que se toma como argumento de entrada, coincida con cada
+   *   valor asociado a cada clave con el mismo nombre en cada atributo. Si el
+   *   diccionario contiene claves que no coinciden con algun atributo de la
+   *   clase se considera que el objeto no machea con el objeto
+   *
+   * Parametros:
+   *   attributes: Diccionario que contiene nombres de atributos como claves  
+   *               y posiblemente claves que no sean nombre de atributos.
+   *               
+   * Resultados:
+   *   True: Si el valor de cada atributo del objeto coincide con el valor 
+   *         asociado a cada una de las claves con el mismo nombre y ademas el 
+   *         diccionario de entrada no contiene claves que no sean nombres de
+   *         atributos de la Clase. 
+   *   False: Si el diccionario de entrada tiene claves que no son nombres de
+   *          atributos de la Clase, o si el valor de algun atributo del objeto
+   *          no coincide con el valor asociado a la clave con el mismo nombre. 
+   */
+
   def matchWithFilters(attributes: Map[String, Any]): Boolean = {
     val validFilterKeys: Set[String] = Set("preferred_country",
                                           "category_id",
@@ -62,6 +84,22 @@ trait Model[M <: Model[M]] { self: M =>
     }
   }
 
+
+  /* Descripcion:
+   *   Controla que todos los elemento del conjunto de entrada coincidan con
+   *   al menos uno de los atributos de la clase y que todos los atributos 
+   *   menos el atributo id esten representados en dicho conjunto, si esto no es
+   *   no es asi se levanta una excepcion en caso contrario termina con no
+   *   normalidad.
+   *
+   * Parametros:
+   *   keys: Conjunto que contiene elementos que pueden coincidir con nombres de
+   *         atributos o no.
+   *               
+   * Resultados:
+   *   Ninguno
+   */
+  
   def validateKeys(keys: Set[String]): Unit = {
     val validKeys: Set[String] = this.toMap.keys.toSet - "id"
     keys == validKeys match {
