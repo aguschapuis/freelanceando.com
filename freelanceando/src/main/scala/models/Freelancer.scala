@@ -111,9 +111,9 @@ class Freelancer extends Model[Freelancer] {
       case true => {
         attributes.contains("category_id") match {
           case true => {
-            val id: Int = attributes("category_id").toString().toInt
+            var id: Int = attributes("category_id").toString.toInt
             this.category_ids.contains(id) &&
-              (attributes - "category_ids").toSet.subsetOf(this.toMap.toSet)
+              (attributes - "category_id").toSet.subsetOf(this.toMap.toSet)
           }
           case false => attributes.toSet.subsetOf(this.toMap.toSet)
         }
