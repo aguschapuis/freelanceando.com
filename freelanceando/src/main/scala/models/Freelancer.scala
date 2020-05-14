@@ -104,15 +104,16 @@ class Freelancer extends Model[Freelancer] {
 
   override def matchWithFilters(attributes: Map[String, Any]): Boolean = {
     val validFilterKeys: Set[String] = Set("country_code",
+                                          "reputation",
                                           "category_id",
-                                          "reputation")
+                                          "hourly_price")
     attributes.keys.toSet.subsetOf(validFilterKeys) match {
       case true => {
         attributes.contains("category_id") match {
           case true => {
-            val id: Int = attributes("category_id").toString.toInt
+            val id: Int = attributes("category_id").toString().toInt
             this.category_ids.contains(id) &&
-              (attributes - "category_id").toSet.subsetOf(this.toMap.toSet)
+              (attributes - "category_ids").toSet.subsetOf(this.toMap.toSet)
           }
           case false => attributes.toSet.subsetOf(this.toMap.toSet)
         }
