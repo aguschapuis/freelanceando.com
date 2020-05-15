@@ -233,7 +233,7 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet
           case err1: org.json4s.MappingException =>
           BadRequest("Invalid parameter\n")
           case err2: IllegalArgumentException =>
-          BadRequest("Invalid parameter\n")
+          NotFound("Invalid id\n")
         }
       }
     }
