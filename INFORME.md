@@ -44,20 +44,28 @@ Los metodos definidos fueron:
           se decidio asi porque consideramos que no se deberia reescribir codigo y tambien
           porque pensamos que el procedimiento que procese dichos datos debia realizar la tarea
           donde se definieron esos atributos.
+		  También tomamos la desición de que si al momento de extraer del Jsonvalue con una llave
+		  un valor que no corresponda al tipo de dato esperado se lance la excepción `IllegalArgumentException`
+	      para luego capturarla con un catch y actuar en consecuencia (por ejemplo si esperamos un valor
+		  JString y es un JInt u otro se procede a lanzar la excepción). En el caso que no se obtenga un valor
+		  al extraer con la llave `reputation` el mismo atributo se setea con `"Junior"` como fue indicado en la
+		  consigna.
 
 ```toMap:``` Se sobreescribio el metodo heredado de Model, debido a que se debia contemplar los
         atributos de la Clase, pero se lo llamo para que procesara los atributos que se heredaban
         de Model.
 
 ```validateKeys:``` toma un conjunto de String y controla que todos sus elementos sean nombres de
-         atributos de la Clase Freelancer.
+         atributos de la Clase que se puedan setear al hacer un POST. Se considera válida la presencia o no
+		 de un valor para el atributo `reputation`
 
 ```validateCategoryId:``` Toma una lista de enteros con los ids de todas las categorias existentes 
          y controla que los ids de freelancer sean correctas(que existan las categorias).
+         En caso que esto no se cumple se genera una excepción para luego ser capturada en un catch.
 
 ```matchWithFilters:``` Toma un mapa con los atributos a filtrar y sus respectivos valores y 
          corrobora que los mismos sean atributos validos en la clase Freelancer.
-         Tambien controla que si filtra por ids de categorias, los mismos sean validos entre las 
+         Tambien controla que si filtra por una id de categoria, la misma sea válida entre las 
          categorias existentes. 
 
 ```IncrementTotal_earning:``` Toma un entero y lo suma a lo total ganado por el freelancer.
@@ -164,13 +172,8 @@ El concepto usado
    de autenticacion que exije el sitio de mercado libre.
 
 
-### Class DatabaseTable
-
-Para el metodo ```filter```  se reuso el metodo de all definido en la misma clase y el metodo filter
-definida en la clase List, para no crear funcionalidad ya desarrollada.Tambien se decidio que el codigo  
-encargado de chequear si un objeto, contenido en el atributo ```_instances```, cumple con los parametros 
-ingresados debe realizarlo el mismo objeto debido a que se necesita trabajar sobre parte o todos los de 
-atributos contenidos en este.  
+   
+     
 
 
 
