@@ -155,6 +155,13 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet
           newJob.validateCategoryId(category)
           newJob.validateClientId(clients)
           db.jobs.save(newJob)
+          val clientId: Int = newJob.getClient_id
+          db.clients.get(clientId) match {
+            case None => throw new IllegalArgumentException
+            case Some(client) =>
+              client.add_job(newJob.getClient_id) 
+          }
+          db.clients.write
           Ok(newJob.getId)
         }
         catch {
@@ -188,7 +195,7 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet
                     case None => throw new IllegalArgumentException
                     case Some(client) => {
                       // Efectuamos el pago:
-                      freelancer.IncrementTotal_earning(amount)
+                      freelancer.IncrementTotal_earnings(amount)
                       client.IncrementTotal_spend(amount)
                       db.freelancers.write
                       db.clients.write
