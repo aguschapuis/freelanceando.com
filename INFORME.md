@@ -22,12 +22,50 @@ Se definio los siguientes metodos del trait Model:
                como entrada sean todos nombres de algun atributo miembro de la clase excepto el 
                atributo 'id'.
 
+### Class Freelancer
 
+Se definio la clase freelancer la cual contiene los atributos y metodos necesarios para poder contener 
+los datos del usuario freelancer y los metodos necesarios para operar sobre estos datos.
+
+Se definieron los siguientes atributos:
+
+```username:``` Nombre del usuario
+```country_code:``` Codigo del pais
+```category_ids:``` Ids de las categorias en las que puede trabajar
+```reputation:``` Reputacion
+```hourly_price:``` Precio que cobra por hora
+```total_earning:``` Total de dinero ganado
+
+Los metodos definidos fueron:
+
+```fromJson:``` Se sobreescribio el metodo fromJson heredado del trait model, debido a que
+          la Clase Freelancer tenia atributos propios no definidos en Model, pero se lo llamo
+          (al metodo de Model) para que procesara los atributos definidos en dicho Trait, esto
+          se decidio asi porque consideramos que no se deberia reescribir codigo y tambien
+          porque pensamos que el procedimiento que procese dichos datos debia realizar la tarea
+          donde se definieron esos atributos.
+
+```toMap:``` Se sobreescribio el metodo heredado de Model, debido a que se debia contemplar los
+        atributos de la Clase, pero se lo llamo para que procesara los atributos que se heredaban
+        de Model.
+
+```validateKeys:``` toma un conjunto de String y controla que todos sus elementos sean nombres de
+         atributos de la Clase Freelancer.
+
+```validateCategoryId:``` Toma una lista de enteros con los ids de todas las categorias existentes 
+         y controla que los ids de freelancer sean correctas(que existan las categorias).
+
+```matchWithFilters:``` Toma un mapa con los atributos a filtrar y sus respectivos valores y 
+         corrobora que los mismos sean atributos validos en la clase Freelancer.
+         Tambien controla que si filtra por ids de categorias, los mismos sean validos entre las 
+         categorias existentes. 
+
+```IncrementTotal_earning:``` Toma un entero y lo suma a lo total ganado por el freelancer.
 
 ### Class Client
 
-Se definio la clase cliente la cual contiene los atributos y metodos necesarios para poder
-contener los datos del usuario cliente y los metodos necesarios para operar sobre estos datos.
+Se definio la clase cliente la cual contiene los atributos y metodos necesarios para poder contener 
+los datos del usuario cliente y los metodos necesarios para operar sobre estos datos.
 
 Se definieron los siguientes atributos:
 
@@ -74,9 +112,13 @@ Atributos:
 
 Metodos definidos:
 
-```validateCategoryId:``` Metodo que valida que el id de la categoria del trabajo exista entre las categorias ya definidas 
+```validateCategoryId:``` Toma una lista de enteros que son los ids de todas las 
+         categorias existentes y controla que el id del trabajo posteado este 
+         entre estos
 
-```validateClientId:``` Metodo que controla que el cliente que ofrece el trabajo exista entre los clientes ya registrados en la pagina
+```validateClientId:``` Toma una lista de enteros que son los ids de los clientes
+         ya registrados y controla que el id del usuario que postea el trabajo este
+         entre estos
 
 ### Preguntas de la catedra:
 
