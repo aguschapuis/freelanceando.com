@@ -153,8 +153,15 @@ para manejar el atributo Id, ya sea para pasarlo a un diccionario o para crear u
 
 ¿Qué concepto de la programación orientada a objetos es el que les permite que un mismo endpoint como `api/freelancers` tome distintos parámetros?
 FreelanceandoServlet
+Consideramos que el concepto de POO que permite que que un mismo endpoint tome distintos parametros es
 
-El concepto usado 
+  * La ```busqueda dinamica``` debido a que si una ruta no coincide con la url entrante se busca la siguiente
+
+    de acuerdo a un orden especificado por el framework.
+
+  * La ```Abstraccion``` ya que se puede acceder a los distintos parametros tratando al cuerpo de la peticion
+
+    como un objeto.
 
 
 * ¿Dónde colocaron el código con la lógica de la acción pagar? ¿Lo dividieron entre varios objetos, o pusieron todo en un mismo lugar?
