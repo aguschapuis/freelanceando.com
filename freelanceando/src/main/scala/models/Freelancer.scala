@@ -29,7 +29,7 @@ class Freelancer extends Model[Freelancer] {
   protected[models] var category_ids: List[Int] = List()
   protected[models] var reputation: String = "DefaultStr"
   protected[models] var hourly_price: Int = 0
-  protected[models] var total_earning: Int = 0
+  protected[models] var total_earnings: Int = 0
 
   // Getters
   def getUsername: String = username
@@ -44,7 +44,7 @@ class Freelancer extends Model[Freelancer] {
                   "category_ids" -> category_ids,
                   "reputation" -> reputation,
                   "hourly_price" -> hourly_price,
-                  "total_earning" -> total_earning)
+                  "total_earnings" -> total_earnings)
   }
                                             
   
@@ -88,7 +88,7 @@ class Freelancer extends Model[Freelancer] {
   }
 
   override def validateKeys(keys: Set[String]): Unit = {
-    val validKeys: Set[String] = this.toMap.keys.toSet - ("id","total_earning")
+    val validKeys: Set[String] = this.toMap.keys.toSet - ("id","total_earnings")
     keys == validKeys || keys == validKeys - "reputation" match {
       case false => throw new IllegalArgumentException
       case _ =>
@@ -122,7 +122,7 @@ class Freelancer extends Model[Freelancer] {
     }
   }
 
-  def IncrementTotal_earning(amount: Int): Unit = {
-    this.total_earning += amount
+  def IncrementTotal_earnings(amount: Int): Unit = {
+    this.total_earnings += amount
   }
 }
