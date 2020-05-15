@@ -30,19 +30,19 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet
       var attributes = Map[String, Any]()
       var listaux = mutable.ListBuffer[(String, Any)]()
       params.get("country_code") match {
-        case Some(value) => listaux += ("country_code" -> value)
+        case Some(value) => listaux += "country_code" -> value
         case None => 
       }
       (params.get("reputation")) match {
-        case Some(value) =>  listaux += "reputation" -> value
+        case Some(value) => listaux += "reputation" -> value
         case None =>  
       }
       (params.get("category_id")) match {
-        case Some(value) =>  listaux += "category_ids" -> value
+        case Some(value) => listaux += "category_id" -> value.toInt
         case None =>  
       }
       (params.get("hourly_price")) match {
-        case Some(value) =>  listaux += "hourly_price" -> value
+        case Some(value) => listaux += "hourly_price" -> value.toInt
         case None =>  
       }
       attributes = listaux.toMap
