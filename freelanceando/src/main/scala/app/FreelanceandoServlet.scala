@@ -131,15 +131,37 @@ class FreelanceandoServlet(db : Database) extends ScalatraServlet
   
   get("/api/jobs") { Ok(db.jobs.all.map((x: Job) => x.toMap)) }
   
-  get("/api/posts/"){
-    parsedBody match {
-      case JNothing => BadRequest("Bad Json\n")
-      case parsedResponse => {
-        val attributes = parsedResponse.extract[Map[String, Any]]
-        Ok(db.jobs.filter(attributes).map((x: Job) => x.toMap))
-      }
-    }    
+  get("/api/posts"){
+    var attributes = Map[String, Any]()
+    var listaux = mutable.ListBuffer[(String, Any)]()
+    params.get("title") match {
+      case Some(value) => listaux += "title" -> value
+      case None => 
+    }
+    (params.get("client_id")) match {
+      case Some(value) => listaux += "client_id" -> value.toInt
+      case None =>  
+    }
+    (params.get("category_id")) match {
+      case Some(value) => listaux += "category_id" -> value.toInt
+      case None =>  
+    }
+    (params.get("preferred_expertise")) match {
+      case Some(value) => listaux += "preferred_expertise" -> value
+      case None =>  
+    }
+    (params.get("preferred_country")) match {
+      case Some(value) => listaux += "preferred_country" -> value
+      case None =>  
+    }
+    (params.get("hourly_price")) match {
+      case Some(value) => listaux += "hourly_price" -> value.toInt
+      case None =>  
+    }
+    attributes = listaux.toMap
+    Ok(db.jobs.filter(attributes).map((x: Job) => x.toMap))    
   }
+
   
   post("/api/jobs") {
     parsedBody match {

@@ -64,6 +64,28 @@ class Job extends Model[Job]{
     this
   }
 
+  override def matchWithFilters(attributes: Map[String, Any]): Boolean = {
+    val validFilterKeys: Set[String] = Set("title",
+                                          "client_id",
+                                          "category_id",
+                                          "preferred_expertise",
+                                          "preferred_country",
+                                          "hourly_price")
+    attributes.keys.toSet.subsetOf(validFilterKeys) match {
+      case true => {
+        attributes.contains("category_id") match {
+          case true => {
+            var id: Int = attributes("category_id").toString.toInt
+            this.category == id &&
+              (attributes - "category_id").toSet.subsetOf(this.toMap.toSet)
+          }
+          case false => attributes.toSet.subsetOf(this.toMap.toSet)
+        }
+      }
+      case _ => false
+    }
+  }
+
   /* Descripcion:
    *  Controla que la categoria del trabajo posteado exista entre las 
    *  categorias ya definidas, si esto no es asi se levanta una excepcion

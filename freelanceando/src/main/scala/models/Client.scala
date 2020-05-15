@@ -112,6 +112,6 @@ class Client() extends Model[Client] {
   }
  
   def add_job(id: Int) : Unit = {
-    this.job_ids = this.job_ids.::(id)
+    this.job_ids = this.job_ids.:+(id)
   }
 }
