@@ -102,8 +102,13 @@ El concepto usado
    de autenticacion que exije el sitio de mercado libre.
 
 
-   
-     
+### Class DatabaseTable
+
+Para el metodo ```filter```  se reuso el metodo de all definido en la misma clase y el metodo filter
+definida en la clase List, para no crear funcionalidad ya desarrollada.Tambien se decidio que el codigo  
+encargado de chequear si un objeto, contenido en el atributo ```_instances```, cumple con los parametros 
+ingresados debe realizarlo el mismo objeto debido a que se necesita trabajar sobre parte o todos los de 
+atributos contenidos en este.  
 
 
 
